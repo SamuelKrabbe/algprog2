@@ -13,58 +13,77 @@
 #define MAX 61
 #define MIN 5
 
-struct subjectCell
+typedef struct
 {
+    int indexOfCell;
     char code[MIN];
     char name[MAX];
-    char dependencies[INT_MAX][MIN];
     int numOfDependencies;
-    struct subjectCell *next;
-};
+    Subject *nextCell;
+}Subject;
+
+typedef struct
+{
+    char code[MIN];
+    int indexesDependent[INT_MAX];
+    Subject *nextCell;
+}Dependency;
 
 // int vectorLenght(char *vector)
 // {}
 
 int main(void)
 {
-    struct subjectCell firstSubject, *p; 
-    char courseName[MAX], currentSubjectCode[MIN], currentSubjectDependency[MIN];
-    int numOfSubjects;
+    int testCases;
+    
+    scanf("%d", &testCases);
 
-    p = &firstSubject;
-
-    scanf("%s", courseName);
-    scanf("%d", &numOfSubjects);
-
-    //lendo as disciplinas e seus códigos
-    for (int i = 0; i < numOfSubjects; i++)
+    for (int i = 0; i < testCases; i++)
     {
-        scanf("%s %s", p->code, p->name);
+        Subject firstSubjectRead, *subjectPointer;
+        Dependency firstDependencyRead, *dependencyPointer;
+        subjectPointer = &firstSubjectRead;
+        dependencyPointer = &firstDependencyRead;
 
-        if (i != (numOfSubjects - 1))
+        char courseName[MAX], dependencyCode[MIN], currentSubjectInAnalysis;
+        int numOfSubjectsInCourse;
+
+        scanf("%s", courseName);
+        scanf("%d", &numOfSubjectsInCourse);
+
+        //lendo as disciplinas e seus códigos respectivos
+        for (int j = 0; j < numOfSubjectsInCourse; j++)
         {
-            //possível função
-            struct subjectCell newSubject;
-            p->next = &newSubject;
-            p = p->next;
-        }else{
-            p->next = &firstSubject;
-            p = p->next;
+            subjectPointer->indexOfCell = j;
+            scanf("%s %s", subjectPointer->code, subjectPointer->name);
+            
+            //criando nova célula, faça uma função disso
+            Subject newSubjectCell;
+            subjectPointer->nextCell = &newSubjectCell;
+            subjectPointer = subjectPointer->nextCell;
         }
-    }
 
-
-    //lendo as dependencias
-    while (scanf("%s %s", currentSubjectDependency, currentSubjectCode) != "FIM FIM")
-    {
-        for (int j = 0; j < numOfSubjects; j++)
+        //lendo as dependências/pré-requisitos
+        while (scanf("%s %s", dependencyCode, currentSubjectInAnalysis) != "FIM FIM")
         {
-            if (currentSubjectCode == p->code)
-            {   
-                // p->numOfDependencies = vectorLenght(p->dependencies);
-                // p->dependencies[p->numOfDependencies] = currentSubjectDependency;
-            }else{
-                p = p->next;
+            for (int k = 0; k < numOfSubjectsInCourse; k++)
+            {
+                if (currentSubjectInAnalysis == subjectPointer->code)
+                {
+                    // dependencyPointer->code = dependencyCode;
+
+                    dependencyPointer->indexesDependent[k] = subjectPointer->indexOfCell;
+
+                    //criando nova célula, faça uma função disso
+                    Dependency newDependencyCell;
+                    dependencyPointer->nextCell = &newDependencyCell;
+                    dependencyPointer = dependencyPointer->nextCell;
+                    break;
+                }
+                else
+                {
+                    subjectPointer = subjectPointer->nextCell;
+                }
             }
         }
     }
