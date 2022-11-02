@@ -1,0 +1,48 @@
+2
+
+Tecnolologia em Psicologia Hidráulica
+18
+ICO1 Introdução à Computação 1
+FIS1 Física 1
+CAL1 Cálculo 1
+IPH1 Introdução à Psicologia Hidráulica 1
+ICO2 Introdução à Computação 2
+FIS2 Física 2
+CAL2 Cálculo 2
+IPH2 Introdução à Psicologia Hidráulica 2
+CSO Ciências Sociais
+MFL Mecânica dos Fluidos
+PHI Psicologia Hidráulica
+PGE Psicologia Geral
+IMC Introdução à Metodologia Científica
+ESU Estágio Supervisionado
+PGR Projeto de Graduação
+PCL Prática Clínica
+OPT1 Optativa 1
+OPT2 Optativa 2
+ICO1 ICO2
+FIS1 FIS2
+FIS1 MFL
+CAL1 CAL2
+IPH1 IPH2
+ICO2 PHI
+FIS2 PHI
+CAL2 MFL
+IPH2 PHI
+IPH2 PGE
+CSO PCL
+PHI ESU
+PHI PCL
+PGE PGR
+PGE PCL
+IMC PGR
+FIM FIM
+
+Tecnologia em Pedagogia Cinética
+3
+LP1 Língua Portuguesa 1
+FIS1 Física 1
+PGR Projeto de Graduação
+LP1 PGR
+FIS1 PGR
+FIM FIM
