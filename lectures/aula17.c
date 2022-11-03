@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include "util.h"
 #define MAX 100 
 
 int max(int n, int *v);
