@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "util.h"
 #define DIM 50
 
 int somaMatriz(int n, const int *A);
@@ -18,13 +19,3 @@ int main()
 	return 0;
 }
 
-int somaMatriz(int n, const int *A)
-{
-	int soma, *p;
-	soma = 0;
-
-	for (p = *(*A); p < *(*A) + (n * n); p++)
-		soma += *p;
-
-	return soma;
-}
