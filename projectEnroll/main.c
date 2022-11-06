@@ -25,65 +25,66 @@ int main(void)
     for (int i = 0; i < testCases; i++)
     {
         //células
-        Subject firstSubjectRead, *subjectPointer;
-        subjectPointer = &firstSubjectRead;
+        Subject firstSubRead, *subPointer;
+        subPointer = &firstSubRead;
 
         //variáveis
-        char courseName[MAX], dependencyCode[MIN], currentSubjectInAnalysis[MIN];
-        int numOfSubjectsInCourse, dependencyIndex, flag1, flag2;
+        char courseName[MAX], dependencyCode[MIN], currentSubInAnalysis[MIN];
+        int numOfSubsInCourse, dependencyIndex, flag1, flag2;
 
         scanf("%s", courseName);
-        scanf("%d", &numOfSubjectsInCourse);
+        scanf("%d", &numOfSubsInCourse);
 
         //lendo as disciplinas e seus códigos respectivos
-        for (int j = 0; j < numOfSubjectsInCourse; j++)
+        for (int j = 0; j < numOfSubsInCourse; j++)
         {
-            subjectPointer->indexOfCell = j;
-            scanf("%s %s", subjectPointer->code, subjectPointer->name);
+            subPointer->indexOfCell = j;
+            scanf("%s %s", subPointer->code, subPointer->name);
             
-            createNewSubjectCell(subjectPointer);
+            addNewCellToList(subPointer);
         }
+        subPointer->nextCell = &firstSubRead;
 
         //setando o número de dependências para 0 em todas as células
-        for (int r = 0; r < numOfSubjectsInCourse; r++)
+        for (int r = 0; r < numOfSubsInCourse; r++)
         {
-            subjectPointer->indexOfCell = 0;
-            subjectPointer = subjectPointer->nextCell;
+            subPointer->indexOfCell = 0;
+            subPointer = subPointer->nextCell;
         }
 
         //lendo as dependências
         while (CONST)
         {
-            scanf("%s %s", dependencyCode, currentSubjectInAnalysis);
+            scanf("%s %s", dependencyCode, currentSubInAnalysis);
 
             flag1 = compareStrings(dependencyCode, endOfTest);
-            flag2 = compareStrings(currentSubjectInAnalysis, endOfTest);
+            flag2 = compareStrings(currentSubInAnalysis, endOfTest);
 
             if (flag1 && flag2)
                 break;
 
-            for (int k = 0; k < numOfSubjectsInCourse; k++)
+            for (int k = 0; k < numOfSubsInCourse; k++)
             {
-                if (currentSubjectInAnalysis == subjectPointer->code)
+                if (currentSubInAnalysis == subPointer->code)
                 {
-                    dependencyIndex = getSubjectIndex(dependencyCode, subjectPointer, numOfSubjectsInCourse);
-                    linkDependencyIndexToCell(dependencyIndex, subjectPointer, subjectPointer->numOfDependencies);
+                    dependencyIndex = getSubjectIndex(dependencyCode, subPointer, numOfSubsInCourse);
+                    linkDependencyIndexToCell(dependencyIndex, subPointer, subPointer->numOfDependencies);
                 }
                 else
                 {
-                    subjectPointer = subjectPointer->nextCell;
+                    subPointer = subPointer->nextCell;
                 }
             }
         }
 
-        for (int s = 0; s < numOfSubjectsInCourse; s++)
+        for (int s = 0; s < numOfSubsInCourse; s++)
         {
-            printf("%d", subjectPointer->indexOfCell);
-            printf("%s", subjectPointer->code);
-            printf("%s", subjectPointer->name);
-            printf("%d", subjectPointer->numOfDependencies);
-            for (int g = 0; g < subjectPointer->numOfDependencies; g++)
-                printf("%d", subjectPointer->dependenciesIndex[g]);
+            printf("%d", subPointer->indexOfCell);
+            printf("%s", subPointer->code);
+            printf("%s", subPointer->name);
+            printf("%d", subPointer->numOfDependencies);
+            for (int g = 0; g < subPointer->numOfDependencies; g++)
+                printf("%d", subPointer->dependenciesIndex[g]);
         }
     }
     return 0;

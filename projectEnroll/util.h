@@ -33,12 +33,11 @@ int compareStrings(char *string1, char *string2)
     return 1;
 }
 
-Subject createNewSubjectCell(Subject *cellPointer)
+void addNewCellToList(Subject *cellPointer)
 {
     Subject newSubjectCell;
     cellPointer->nextCell = &newSubjectCell;
     cellPointer = cellPointer->nextCell;
-    return newSubjectCell;
 }
 
 int getSubjectIndex(char *dependencyCode, Subject *cellPointer, int numOfSubjectsInCourse)
