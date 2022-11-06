@@ -1,8 +1,8 @@
 #Makefile para o trabalho
 
 PROG = main
-INPUT = inputFile.txt
-OUTPUT = outputFile.txt
+ENTRA = inputFile.txt
+SAI = outputFile.txt
 
 CFLAGS = -Wall
 
@@ -12,5 +12,5 @@ default :
 	@echo ""
 	@echo "-----------------------------------"
 	@echo "Teste:"
-	./$(PROG) <$(INPUT) >$(OUTPUT)
-	cat $(OUTPUT)
+	./$(PROG) <$(ENTRA) >$(SAI)
+	cat $(SAI)
