@@ -1,6 +1,6 @@
 /**************************************************
 2 *
-3 * Aluno: Samuel Krabbe
+3 * Alunos: Samuel Krabbe e Leonardo Perin
 4 * Trabalho 1
 5 * Professor: Marco Stefanes
 6 *
@@ -13,24 +13,6 @@
 #define MAX 61
 #define MIN 5
 
-typedef struct
-{
-    int indexOfCell;
-    char code[MIN];
-    char name[MAX];
-    int numOfDependencies;
-    Subject *nextCell;
-}Subject;
-
-typedef struct
-{
-    char code[MIN];
-    int indexesDependent[INT_MAX];
-    Subject *nextCell;
-}Dependency;
-
-// int vectorLenght(char *vector)
-// {}
 
 int main(void)
 {
@@ -40,13 +22,13 @@ int main(void)
 
     for (int i = 0; i < testCases; i++)
     {
+        //células
         Subject firstSubjectRead, *subjectPointer;
-        Dependency firstDependencyRead, *dependencyPointer;
         subjectPointer = &firstSubjectRead;
-        dependencyPointer = &firstDependencyRead;
 
+        //variáveis
         char courseName[MAX], dependencyCode[MIN], currentSubjectInAnalysis;
-        int numOfSubjectsInCourse;
+        int numOfSubjectsInCourse, dependencyIndex;
 
         scanf("%s", courseName);
         scanf("%d", &numOfSubjectsInCourse);
@@ -57,28 +39,25 @@ int main(void)
             subjectPointer->indexOfCell = j;
             scanf("%s %s", subjectPointer->code, subjectPointer->name);
             
-            //criando nova célula, faça uma função disso
-            Subject newSubjectCell;
-            subjectPointer->nextCell = &newSubjectCell;
+            createNewSubjectCell(subjectPointer);
+        }
+
+        //setando o número de dependências para 0 em todas as células
+        for (int r = 0; r < numOfSubjectsInCourse; r++)
+        {
+            subjectPointer->indexOfCell = 0;
             subjectPointer = subjectPointer->nextCell;
         }
 
-        //lendo as dependências/pré-requisitos
+        //lendo as dependências
         while (scanf("%s %s", dependencyCode, currentSubjectInAnalysis) != "FIM FIM")
         {
             for (int k = 0; k < numOfSubjectsInCourse; k++)
             {
                 if (currentSubjectInAnalysis == subjectPointer->code)
                 {
-                    // dependencyPointer->code = dependencyCode;
-
-                    dependencyPointer->indexesDependent[k] = subjectPointer->indexOfCell;
-
-                    //criando nova célula, faça uma função disso
-                    Dependency newDependencyCell;
-                    dependencyPointer->nextCell = &newDependencyCell;
-                    dependencyPointer = dependencyPointer->nextCell;
-                    break;
+                    dependencyIndex = getSubjectIndex(dependencyCode, subjectPointer, numOfSubjectsInCourse);
+                    linkDependencyIndexToCell(dependencyIndex, subjectPointer, subjectPointer->numOfDependencies);
                 }
                 else
                 {
@@ -86,7 +65,16 @@ int main(void)
                 }
             }
         }
+
+        for (int s = 0; s < numOfSubjectsInCourse; s++)
+        {
+            printf("%d", subjectPointer->indexOfCell);
+            printf("%s", subjectPointer->code);
+            printf("%s", subjectPointer->name);
+            printf("%d", subjectPointer->numOfDependencies);
+            for (int g = 0; g < subjectPointer->numOfDependencies; g++)
+                printf("%d", subjectPointer->dependenciesIndex[g]);
+        }
     }
-    
     return 0;
 }
