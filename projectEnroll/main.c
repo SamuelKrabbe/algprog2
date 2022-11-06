@@ -21,7 +21,9 @@ int main(void)
     char endOfTest[] = {'F', 'I', 'M', '\0'};
     
     scanf("%d", &testCases);
+    printf("\n");
 
+    //executa para cada caso de teste
     for (int i = 0; i < testCases; i++)
     {
         //células
@@ -76,6 +78,7 @@ int main(void)
                 }
             }
         }
+        printf("\n");
 
         for (int s = 0; s < numOfSubsInCourse; s++)
         {
