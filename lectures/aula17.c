@@ -1,7 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include "util.h"
 #define MAX 100 
-
-int max(int n, int *v);
 
 int main()
 {
@@ -17,13 +17,3 @@ int main()
 	return 0;
 }
 
-int max(int n, int *v)
-{
-	int i, maior, *p;
-	p = v;
-	maior = *p;
-	for (i = 1; i < n; i++)
-		if (*(p + i) > maior)
-			maior = p[i];
-	return maior;
-}
