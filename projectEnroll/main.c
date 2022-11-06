@@ -12,11 +12,13 @@
 #include "util.h"
 #define MAX 61
 #define MIN 5
+#define CONST 1
 
 
 int main(void)
 {
     int testCases;
+    char endOfTest[] = {'F', 'I', 'M', '\0'};
     
     scanf("%d", &testCases);
 
@@ -27,8 +29,8 @@ int main(void)
         subjectPointer = &firstSubjectRead;
 
         //variáveis
-        char courseName[MAX], dependencyCode[MIN], currentSubjectInAnalysis;
-        int numOfSubjectsInCourse, dependencyIndex;
+        char courseName[MAX], dependencyCode[MIN], currentSubjectInAnalysis[MIN];
+        int numOfSubjectsInCourse, dependencyIndex, flag1, flag2;
 
         scanf("%s", courseName);
         scanf("%d", &numOfSubjectsInCourse);
@@ -50,8 +52,16 @@ int main(void)
         }
 
         //lendo as dependências
-        while (scanf("%s %s", dependencyCode, currentSubjectInAnalysis) != "FIM FIM")
+        while (CONST)
         {
+            scanf("%s %s", dependencyCode, currentSubjectInAnalysis);
+
+            flag1 = compareStrings(dependencyCode, endOfTest);
+            flag2 = compareStrings(currentSubjectInAnalysis, endOfTest);
+
+            if (flag1 && flag2)
+                break;
+
             for (int k = 0; k < numOfSubjectsInCourse; k++)
             {
                 if (currentSubjectInAnalysis == subjectPointer->code)

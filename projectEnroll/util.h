@@ -19,6 +19,20 @@ typedef struct subjectCell
 
 //FUNÇÕES ----------------------------------------------------
 
+int compareStrings(char *string1, char *string2)
+{
+    int i = 0;
+
+    while ((*(string1 + i) != '\0') || (*(string2 + i) != '\0'))
+    {
+        if (*(string1 + i) != *(string2 + i))
+            return 0;
+        else
+            i++;
+    }
+    return 1;
+}
+
 Subject createNewSubjectCell(Subject *cellPointer)
 {
     Subject newSubjectCell;
@@ -50,7 +64,7 @@ int getSubjectIndex(char *dependencyCode, Subject *cellPointer, int numOfSubject
     return -1;
 }
 
-linkDependencyIndexToCell(int dependencyIndex, Subject *cellPointer, int numOfDependencies)
+void linkDependencyIndexToCell(int dependencyIndex, Subject *cellPointer, int numOfDependencies)
 {
     cellPointer->dependenciesIndex[numOfDependencies] = dependencyIndex;
     cellPointer->numOfDependencies++;
