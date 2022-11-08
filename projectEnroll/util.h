@@ -38,6 +38,7 @@ void addNewCellToList(Subject *cellPointer)
     Subject newSubjectCell;
     cellPointer->nextCell = &newSubjectCell;
     cellPointer = cellPointer->nextCell;
+    cellPointer->nextCell = NULL;
 }
 
 int getSubjectIndex(char *dependencyCode, Subject *cellPointer, int numOfSubjectsInCourse)
