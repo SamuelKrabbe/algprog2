@@ -3,6 +3,9 @@
 #include "util.h"
 #define DIMENSION 3
 
+//use esse exemplo como entrada:
+// 8 0 7 4 5 6 3 10 2
+
 int main(void)
 {
     Matrix *p;
