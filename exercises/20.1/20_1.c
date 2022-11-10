@@ -1,44 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
- 
-typedef struct cel {
-    int chave;
-    struct cel *prox;
-} celula;
+#include "util.h"
 
-// void enfileiraS(celula *i, celula *f, int x) 
-// {
-//     celula *nova;
-//     nova = (celula *)malloc(sizeof(celula));
-
-//     nova->chave = x;
-//     nova->prox = NULL;
-
-//     i = nova;
-//     f = nova;
-// }
-
-void enfileira_enc_C(celula *i, celula *f, int x)
+int main()
 {
-    celula *nova;
-    nova = (celula *) malloc(sizeof (celula));
-    nova->chave = x;
-    nova->prox = NULL;
-    f->prox = nova;
-    f = nova;
-}
+    Cell *i, *f;
+    int x = 2, y;
 
+    i = NULL;
+    f = NULL;
 
-int main(){
-    celula *i, *f;
-    int x = 2;
+    queueUpWithoutHead(&i, &f, x);
+    y = unqueueWithoutHead(&i, &f);
+    printf("%d\n", y);
 
-    i = (celula *) malloc(sizeof (celula));
-    f = i;
-    
-    enfileira_enc_C(i ,f , x);
-    printf("%d\n", f->chave);
-
-    free(f);
-
+    if (f != NULL)
+        free(f);
 }
