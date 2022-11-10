@@ -23,7 +23,7 @@ void removeCell(Cell *toRemove)
 
 Cell *concatenateWithHead(Cell lst1, Cell lst2)
 {
-    Cell *p1, *p2, *newLst;
+    Cell *p1, *p2, *newLst, *aux;
     p1 = &lst1;
     p2 = &lst2;
 
@@ -35,22 +35,30 @@ Cell *concatenateWithHead(Cell lst1, Cell lst2)
         if (p1->content < p2->content)
         {
             appendCell(p1, newLst);
-            removeCell(p1);
+            aux = p1;
             p1 = p1->nextCell;
+            removeCell(aux);
+            
         }
         else
         {
             if(p2->content < p1->content)
             {
                 appendCell(p2, newLst);
+                aux = p2;
                 p2 = p2->nextCell;
+                removeCell(aux);
             }
             else
             {
                 appendCell(p1, newLst);
                 appendCell(p2, newLst);
+                aux = p1;
                 p1 = p1->nextCell;
+                removeCell(aux);
+                aux = p2;
                 p2 = p2->nextCell;
+                removeCell(aux);
             }
         }
     }
