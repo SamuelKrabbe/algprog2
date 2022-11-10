@@ -11,6 +11,7 @@ int main()
     f = NULL;
 
     queueUpWithoutHead(&i, &f, x);
+    printf("%d\n", f->content);
     y = unqueueWithoutHead(&i, &f);
     printf("%d\n", y);
 
