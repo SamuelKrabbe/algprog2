@@ -8,92 +8,74 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
-#include "util.h"
-#define MAX 61
-#define MIN 5
-#define CONST 1
+#include <string.h>
+#define MIN 4
+#define MAX 60
 
-// typedef struct subjectCell
-// {
-//     int indexOfCell;
-//     char code[MIN];
-//     char name[MAX];
-//     int numOfDependencies;
-//     int dependenciesIndex[INT_MAX];
-//     struct subjectCell *nextCell;
-// }Subject;
+typedef char Codigo[MIN + 1];
+typedef char Nome[MAX + 1];
 
+typedef struct disciplina
+{
+    Codigo codigoDis;
+    Nome nomeDis;
+    struct disciplina **preReq;
+    struct disciplina *proxDis;
+}Disciplina;
+
+// FUNÇÕES (referências) --------------------------------------------------------------------------
+void insereCodENomeNaLista(Disciplina **lista, char *codigoDis, char *nomeDis);
+
+
+// MAIN ------------------------------------------------------------------------------------------
 int main(void)
 {
-    int testCases;
-    char endOfTest[] = {'F', 'I', 'M', '\0'};
+    Disciplina *lista= NULL;
+    Nome nomeCurso, nomeDis;
+    Codigo codigoDis;
+    int numCursos, numDis;
     
-    scanf("%d", &testCases);
-    printf("\n");
+    printf("Quantidade de cursos: ");
+    scanf("%d", &numCursos);
 
-    //executa para cada caso de teste
-    for (int i = 0; i < testCases; i++)
+    for (int i = 0; i < numCursos; i++)
     {
-        //criando lista encadeada com cabeça
-        Subject firstsubjectRead, *subjectPointer;
-        firstsubjectRead.nextCell = NULL;
-        subjectPointer = &firstsubjectRead;
-
-        //variáveis
-        char courseName[MAX], dependencyCode[MIN], currentsubjectInAnalysis[MIN];
-        int numOfsubjectsInCourse, dependencyIndex, flag1, flag2;
-
-        //lendo o nome do curso e número de disciplinas nele
-        scanf("%s", courseName);
-        scanf("%d", &numOfsubjectsInCourse);
-
-        //lendo as disciplinas e seus códigos respectivos
-        for (int j = 0, r = 0; j < numOfsubjectsInCourse; j++, r--)
-        {
-            subjectPointer->indexOfCell = j;
-            subjectPointer->numOfDependencies = j - r;
-            
-            scanf("%s %s", subjectPointer->code, subjectPointer->name);
-            
-            addNewCellToList(subjectPointer);
-        }
-        subjectPointer->nextCell = &firstsubjectRead;
-
-        //lendo as dependências
-        while (CONST)
-        {
-            scanf("%s %s", dependencyCode, currentsubjectInAnalysis);
-
-            flag1 = compareStrings(dependencyCode, endOfTest);
-            flag2 = compareStrings(currentsubjectInAnalysis, endOfTest);
-
-            //se as duas flags forem iguais a 'FIM'(= 1) o teste para
-            if (flag1 && flag2)
-                break;
-
-            for (int k = 0; k < numOfsubjectsInCourse; k++)
-            {
-                if (currentsubjectInAnalysis == subjectPointer->code)
-                {
-                    dependencyIndex = getSubjectIndex(dependencyCode, subjectPointer, numOfsubjectsInCourse);
-                    linkDependencyIndexToCell(dependencyIndex, subjectPointer, subjectPointer->numOfDependencies);
-                }
-                else
-                    subjectPointer = subjectPointer->nextCell;
-            }
-        }
+        printf("Nome do curso: ");
+        scanf("%[^\n]s", nomeCurso);
         printf("\n");
+        printf("Número de disciplinas: ");
+        scanf("%d", &numDis);
 
-        for (int s = 0; s < numOfsubjectsInCourse; s++)
+        for (int j = 0; j < numDis; j++)
         {
-            printf("%d", subjectPointer->indexOfCell);
-            printf("%s", subjectPointer->code);
-            printf("%s", subjectPointer->name);
-            printf("%d", subjectPointer->numOfDependencies);
-            for (int g = 0; g < subjectPointer->numOfDependencies; g++)
-                printf("%d", subjectPointer->dependenciesIndex[g]);
+            scanf("Código e nome da disciplina: %s %[^\n]s", codigoDis, nomeDis);
+            insereCodENomeNaLista(&lista, codigoDis, nomeDis);
         }
     }
+
     return 0;
+}
+
+// FUNÇÕES ----------------------------------------------------------------------------------------
+void insereCodENomeNaLista(Disciplina **lista, char *codigoDis, char *nomeDis)
+{
+    Disciplina *novaDis, *aux;
+    novaDis = (Disciplina*)malloc(sizeof(Disciplina));
+    novaDis->proxDis = NULL;
+    strcpy(novaDis->codigoDis, codigoDis);
+    strcpy(novaDis->nomeDis, nomeDis);
+
+    if (*lista == NULL)
+    {
+        *lista = novaDis;
+    }
+    else
+    {
+        aux = *lista;
+
+        while (aux->proxDis != NULL)
+            aux = aux->proxDis;
+
+        aux->proxDis = novaDis;
+    }
 }
