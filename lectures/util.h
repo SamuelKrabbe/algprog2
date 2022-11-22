@@ -205,3 +205,68 @@ char unstackListWithHead(Stack *top)
         return ' ';
     }
 }
+//aula 27 ---------------------------------------------------------------------------------------------------
+#include <stdio.h>
+#include <stdlib.h>
+    
+void copyOriginalToNewFile(char *originalFile, char *newFile)
+{
+    int copiedChar;
+    FILE *pOriginal, *pCopy;
+
+    pOriginal = fopen(originalFile, "r");
+    if (pOriginal != NULL)
+    {
+        pCopy = fopen(newFile, "w");
+        if (pCopy != NULL)
+        {
+            copiedChar = fgetc(pOriginal);
+            while (copiedChar != EOF)
+            {
+                fputc(copiedChar, pCopy);
+                copiedChar = fgetc(pOriginal);
+            }
+            fclose(pOriginal);
+            fclose(pCopy);
+            printf("File copied!\n");
+        }
+        else
+            printf("Couldn't open file %s for writing\n", newFile);
+    }
+    else
+        printf("Couldn't open file %s for reading\n", originalFile);
+}
+
+void uppercaseOriginalToNewFile(char *originalFile, char *newFile)
+{
+    int originalFileChar;
+    FILE *pOriginal, *pNew;
+
+    pOriginal = fopen(originalFile, "r");
+    if (pOriginal != NULL)
+    {
+        pNew = fopen(newFile, "w");
+        if (pNew != NULL)
+        {
+            originalFileChar = fgetc(pOriginal);
+            while (originalFileChar != EOF)
+            {
+                if (originalFileChar > 96 && originalFileChar < 123)
+                {
+                    originalFileChar -= 32;
+                    fputc(originalFileChar, pNew);
+                }
+                else
+                    fputc(originalFileChar, pNew);
+                originalFileChar = fgetc(pOriginal);
+            }
+            fclose(pOriginal);
+            fclose(pNew);
+            printf("Uppercase file created!\n");
+        }
+        else
+            printf("Couldn't open file %s for reading\n", newFile);
+    }
+    else
+        printf("Couldn't open file %s for reading\n", originalFile);
+}
