@@ -1,8 +1,8 @@
 #Makefile para o trabalho
 
 PROG = main
-ENTRA = inputFile.txt
-SAI = outputFile.txt
+ENTRA = entrada.txt
+SAI = saida.txt
 
 CFLAGS = -Wall
 

@@ -8,92 +8,45 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
+#include <string.h>
 #include "util.h"
-#define MAX 61
-#define MIN 5
-#define CONST 1
-
-// typedef struct subjectCell
-// {
-//     int indexOfCell;
-//     char code[MIN];
-//     char name[MAX];
-//     int numOfDependencies;
-//     int dependenciesIndex[INT_MAX];
-//     struct subjectCell *nextCell;
-// }Subject;
+#define MIN 4
+#define MAX 60
 
 int main(void)
 {
-    int testCases;
-    char endOfTest[] = {'F', 'I', 'M', '\0'};
-    
-    scanf("%d", &testCases);
+    Disciplina *lista = NULL;
+    Nome nomeCurso, nomeDis;
+    Codigo codigoDis, preReq, disciplinaDep;
+    int numCursos, numDis;
+
+    scanf("%d", &numCursos);
     printf("\n");
 
-    //executa para cada caso de teste
-    for (int i = 0; i < testCases; i++)
+    // iterando para cada curso
+    for (int i = 0; i < numCursos; i++)
     {
-        //criando lista encadeada com cabeça
-        Subject firstsubjectRead, *subjectPointer;
-        firstsubjectRead.nextCell = NULL;
-        subjectPointer = &firstsubjectRead;
+        scanf("%[^\n]s", nomeCurso);
+        scanf("%d", &numDis);
 
-        //variáveis
-        char courseName[MAX], dependencyCode[MIN], currentsubjectInAnalysis[MIN];
-        int numOfsubjectsInCourse, dependencyIndex, flag1, flag2;
-
-        //lendo o nome do curso e número de disciplinas nele
-        scanf("%s", courseName);
-        scanf("%d", &numOfsubjectsInCourse);
-
-        //lendo as disciplinas e seus códigos respectivos
-        for (int j = 0, r = 0; j < numOfsubjectsInCourse; j++, r--)
+        // lendo as disciplinas do curso
+        for (int j = 0; j < numDis; j++)
         {
-            subjectPointer->indexOfCell = j;
-            subjectPointer->numOfDependencies = j - r;
-            
-            scanf("%s %s", subjectPointer->code, subjectPointer->name);
-            
-            addNewCellToList(subjectPointer);
+            scanf("%s %[^\n]s", codigoDis, nomeDis);
+            insereCodigoENomeNaLista(&lista, codigoDis, nomeDis);
         }
-        subjectPointer->nextCell = &firstsubjectRead;
 
-        //lendo as dependências
-        while (CONST)
+        // lendo os pré-requisitos de cada disciplina
+        scanf("%s %s", preReq, disciplinaDep);
+        while (strcmp(preReq, "FIM") != 0 || strcmp(disciplinaDep, "FIM") != 0)
         {
-            scanf("%s %s", dependencyCode, currentsubjectInAnalysis);
-
-            flag1 = compareStrings(dependencyCode, endOfTest);
-            flag2 = compareStrings(currentsubjectInAnalysis, endOfTest);
-
-            //se as duas flags forem iguais a 'FIM'(= 1) o teste para
-            if (flag1 && flag2)
-                break;
-
-            for (int k = 0; k < numOfsubjectsInCourse; k++)
-            {
-                if (currentsubjectInAnalysis == subjectPointer->code)
-                {
-                    dependencyIndex = getSubjectIndex(dependencyCode, subjectPointer, numOfsubjectsInCourse);
-                    linkDependencyIndexToCell(dependencyIndex, subjectPointer, subjectPointer->numOfDependencies);
-                }
-                else
-                    subjectPointer = subjectPointer->nextCell;
-            }
+            inserePreReqNaLista(&lista, preReq, disciplinaDep);
+            scanf("%s %s", preReq, disciplinaDep);
         }
         printf("\n");
 
-        for (int s = 0; s < numOfsubjectsInCourse; s++)
-        {
-            printf("%d", subjectPointer->indexOfCell);
-            printf("%s", subjectPointer->code);
-            printf("%s", subjectPointer->name);
-            printf("%d", subjectPointer->numOfDependencies);
-            for (int g = 0; g < subjectPointer->numOfDependencies; g++)
-                printf("%d", subjectPointer->dependenciesIndex[g]);
-        }
+        imprimeLista(&lista, numDis);
     }
+
     return 0;
 }
