@@ -9,73 +9,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "util.h"
 #define MIN 4
 #define MAX 60
 
-typedef char Codigo[MIN + 1];
-typedef char Nome[MAX + 1];
-
-typedef struct disciplina
-{
-    Codigo codigoDis;
-    Nome nomeDis;
-    struct disciplina **preReq;
-    struct disciplina *proxDis;
-}Disciplina;
-
-// FUNÇÕES (referências) --------------------------------------------------------------------------
-void insereCodENomeNaLista(Disciplina **lista, char *codigoDis, char *nomeDis);
-
-
-// MAIN ------------------------------------------------------------------------------------------
 int main(void)
 {
-    Disciplina *lista= NULL;
+    Disciplina *lista = NULL;
     Nome nomeCurso, nomeDis;
-    Codigo codigoDis;
+    Codigo codigoDis, preReq, disciplinaDep;
     int numCursos, numDis;
-    
-    printf("Quantidade de cursos: ");
-    scanf("%d", &numCursos);
 
+    scanf("%d", &numCursos);
+    printf("\n");
+
+    // iterando para cada curso
     for (int i = 0; i < numCursos; i++)
     {
-        printf("Nome do curso: ");
         scanf("%[^\n]s", nomeCurso);
-        printf("\n");
-        printf("Número de disciplinas: ");
         scanf("%d", &numDis);
 
+        // lendo as disciplinas do curso
         for (int j = 0; j < numDis; j++)
         {
-            scanf("Código e nome da disciplina: %s %[^\n]s", codigoDis, nomeDis);
-            insereCodENomeNaLista(&lista, codigoDis, nomeDis);
+            scanf("%s %[^\n]s", codigoDis, nomeDis);
+            insereCodigoENomeNaLista(&lista, codigoDis, nomeDis);
         }
+
+        // lendo os pré-requisitos de cada disciplina
+        scanf("%s %s", preReq, disciplinaDep);
+        while (strcmp(preReq, "FIM") != 0 || strcmp(disciplinaDep, "FIM") != 0)
+        {
+            inserePreReqNaLista(&lista, preReq, disciplinaDep);
+            scanf("%s %s", preReq, disciplinaDep);
+        }
+        printf("\n");
+
+        imprimeLista(&lista, numDis);
     }
 
     return 0;
-}
-
-// FUNÇÕES ----------------------------------------------------------------------------------------
-void insereCodENomeNaLista(Disciplina **lista, char *codigoDis, char *nomeDis)
-{
-    Disciplina *novaDis, *aux;
-    novaDis = (Disciplina*)malloc(sizeof(Disciplina));
-    novaDis->proxDis = NULL;
-    strcpy(novaDis->codigoDis, codigoDis);
-    strcpy(novaDis->nomeDis, nomeDis);
-
-    if (*lista == NULL)
-    {
-        *lista = novaDis;
-    }
-    else
-    {
-        aux = *lista;
-
-        while (aux->proxDis != NULL)
-            aux = aux->proxDis;
-
-        aux->proxDis = novaDis;
-    }
 }
