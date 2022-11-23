@@ -43,20 +43,17 @@ int main(void)
             criaEInsereNaLista(&lista, temp);
         }
 
-        // teste1
-        p = lista;
-        while (p != NULL)
-        {
-            printf("%s %d\n", p->codDisciplina, p->indexDisciplina);
-            p = p->proxDisciplina;
-        }
-        // teste2
+        // teste
         p = lista;
         while (p != NULL)
         {
             aux = p->listaPreRequisitos;
+            printf("%s, %d\n", p->codDisciplina, p->indexDisciplina);
+
             for (int n = 0; n < numDisciplinas; n++)
-                printf("%d\n", aux[n]);
+                printf("%d ", aux[n]);
+            printf("\n");
+            printf("\n");
             p = p->proxDisciplina;
         }
 

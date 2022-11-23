@@ -65,7 +65,8 @@ void criaEInsereNaLista(Disciplina **lista, Pacote *temp)
 void inserePreReqNaLista(Disciplina **lista, Pacote *temp)
 {
     Disciplina *celDependente, *celPreRequisito;
-    int *aux;
+    int *aux, i = 0;
+    //int numDisciplinas = temp->numDisciplinas;
 
     celDependente = *lista;
     celPreRequisito = *lista;
@@ -79,14 +80,21 @@ void inserePreReqNaLista(Disciplina **lista, Pacote *temp)
 
     // inserindo o pré-requisito na lista de pré-requisitos
     aux = celDependente->listaPreRequisitos;
-    if (*aux == 0)
-        *aux = celPreRequisito->indexDisciplina;
+    if (aux[i] == 0)
+    {
+        aux[i] = celPreRequisito->indexDisciplina;
+        // printf("%d", celPreRequisito->indexDisciplina);
+    }
     else
     {
-        while (*aux != 0)
-            aux++;
-        *aux = celPreRequisito->indexDisciplina;
+        while (aux[i] != 0)
+            i++;
+        // printf("%d", celPreRequisito->indexDisciplina);
+        aux[i] = celPreRequisito->indexDisciplina;
     }
+    // for (int u = 0; u < numDisciplinas; u++)
+    //     printf("%d ", aux[u]);
+    (*lista)->listaPreRequisitos = aux;
 }
 
 // void criaEInsereNaGrade(Grade **gradeCurricular, char *codDisciplina)
