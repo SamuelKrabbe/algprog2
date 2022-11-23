@@ -130,7 +130,6 @@ void imprime(disciplina *lista)
             aux = aux->proxPreReq;
         }
         lista = lista->proxDisc;
-        printf("\n");
     }
     printf("\n");
 }

@@ -10,110 +10,189 @@ typedef char Nome[MAX + 1];
 
 typedef struct disciplina
 {
-    Codigo codigoDis;
-    Nome nomeDis;
-    struct disciplina **listaPreReq;
-    struct disciplina *proxDis;
-    struct disciplina *proxPreReq;
+    Codigo codDisciplina;
+    int indexDisciplina;
+    int *listaPreRequisitos;
+    struct disciplina *proxDisciplina;
 } Disciplina;
 
-// FUNÇÕES ---------------------------------------------------------------------
-void insereCodigoENomeNaLista(Disciplina **lista, char *codigoDis, char *nomeDis)
+typedef struct gradeCurricular
 {
-    Disciplina *novaDis, *aux;
+    Codigo codDisciplina;
+    struct gradeCurricular *proxDisciplina;
+} Grade;
 
-    aux = *lista;
-    novaDis = (Disciplina *)malloc(sizeof(Disciplina));
-    novaDis->proxDis = NULL;
-    novaDis->proxPreReq = NULL;
-    novaDis->listaPreReq = (Disciplina **)malloc(1 * sizeof(Disciplina *));
-    *(novaDis->listaPreReq) = NULL;
+// célula pacote para não passar valor por valor para uma função
+typedef struct pacote
+{
+    Nome nomeDisciplina;
+    int indexDisciplina;
+    Codigo codDisciplina;
+    Codigo codPreRequisito;
+    int numDisciplinas;
+} Pacote;
 
-    strcpy(novaDis->codigoDis, codigoDis);
-    strcpy(novaDis->nomeDis, nomeDis);
+// FUNÇÕES ---------------------------------------------------------------------
+void criaEInsereNaLista(Disciplina **lista, Pacote *temp)
+{
+    Disciplina *novaCelula, **aux;
+    int numDisciplinas, indexDisciplina;
+    // *aux2
 
-    if (*lista == NULL)
-        *lista = novaDis;
+    numDisciplinas = temp->numDisciplinas;
+    indexDisciplina = temp->indexDisciplina;
+    aux = lista;
+
+    novaCelula = (Disciplina *)malloc(sizeof(Disciplina));
+    novaCelula->proxDisciplina = NULL;
+    novaCelula->indexDisciplina = indexDisciplina;
+
+    // alocando memória para a lista de indexes
+    novaCelula->listaPreRequisitos = (int *)malloc(numDisciplinas * sizeof(int));
+
+    strcpy(novaCelula->codDisciplina, temp->codDisciplina);
+
+    // inserindo nova célula na lista
+    if (*aux == NULL)
+        *aux = novaCelula;
     else
     {
-        while (aux->proxDis != NULL)
-            aux = aux->proxDis;
-        aux->proxDis = novaDis;
+        while ((*aux)->proxDisciplina != NULL)
+            *aux = (*aux)->proxDisciplina;
+        (*aux)->proxDisciplina = novaCelula;
     }
 }
 
-void inserePreReqNaLista(Disciplina **lista, char *preReq, char *disDependente)
+void inserePreReqNaLista(Disciplina **lista, Pacote *temp)
 {
-    Disciplina *celulaPreReq, *celulaDisDep, *aux;
-    celulaPreReq = *lista;
-    celulaDisDep = *lista;
-    aux = *(celulaDisDep->listaPreReq);
+    Disciplina **celDependente, **celPreRequisito;
+    int *aux;
 
-    // achando a célula do pré-requisito
-    while (strcmp(preReq, celulaPreReq->codigoDis) != 0 && celulaPreReq != NULL)
-        celulaPreReq = celulaPreReq->proxDis;
+    celDependente = lista;
+    celPreRequisito = lista;
 
-    // achando a célula da disciplina dependente
-    while (strcmp(disDependente, celulaDisDep->codigoDis) != 0 && celulaDisDep != NULL)
-        celulaDisDep = celulaDisDep->proxDis;
+    // achando a célula da disciplina dependente e do pré-requisito
+    while (strcmp(temp->codDisciplina, (*celDependente)->codDisciplina) != 0 && *celDependente != NULL)
+        *celDependente = (*celDependente)->proxDisciplina;
+
+    while (strcmp(temp->codPreRequisito, (*celPreRequisito)->codDisciplina) != 0 && *celPreRequisito != NULL)
+        *celPreRequisito = (*celPreRequisito)->proxDisciplina;
 
     // inserindo o pré-requisito na lista de pré-requisitos
-    if (aux == NULL)
-        aux = celulaPreReq;
+    aux = (*celDependente)->listaPreRequisitos;
+    if (*aux == 0)
+        *aux = (*celPreRequisito)->indexDisciplina;
     else
     {
-        while (aux->proxPreReq != NULL)
-            aux = aux->proxPreReq;
-        aux->proxPreReq = celulaPreReq;
+        while (*aux != 0)
+            aux++;
+        *aux = (*celPreRequisito)->indexDisciplina;
     }
 }
 
-void imprimeString(char *string)
-{
-    for (int i = 0; string[i] != '\0'; i++)
-        printf("%c", string[i]);
-}
+// void criaEInsereNaGrade(Grade **gradeCurricular, char *codDisciplina)
+// {
+//     Grade *novaCelula, *aux;
+//     aux = *gradeCurricular;
 
-void freeCelula(Disciplina **celula)
-{
-    Disciplina *p, **aux;
-    p = *celula;
-    aux = p->listaPreReq;
-    free(*aux);
-    free(aux);
-    free(p->proxDis);
-    free(p);
-}
+//     novaCelula = (Grade *)malloc(sizeof(Grade));
+//     novaCelula->proxDisciplina = NULL;
 
-void imprimeLista(Disciplina **lista, int numDis)
-{
-    Disciplina *p, *aux;
-    // char **vetorParaImprimir;
-    int i = 0;
+//     strcpy(novaCelula->codDisciplina, codDisciplina);
 
-    p = *lista;
-    aux = *lista;
-    // vetorParaImprimir = (char **)malloc(numDis * sizeof(Codigo));
+//     // inserindo nova célula na lista
+//     if (aux == NULL)
+//         aux = novaCelula;
+//     else
+//     {
+//         while (aux->proxDisciplina != NULL)
+//             aux = aux->proxDisciplina;
+//         aux->proxDisciplina = novaCelula;
+//     }
+// }
 
-    // iterando para cada disciplina
-    while (p != NULL)
-    {
-        if (*(p->listaPreReq) == NULL)
-        {
-            // strcpy(vetorParaImprimir[i], p->codigoDis);
-            imprimeString(p->codigoDis);
-            p = p->proxDis;
-            aux = p;
-            i++;
-        }
-        else
-        {
-            aux = *(p->listaPreReq);
-            while (aux->proxPreReq != NULL)
-                aux = aux->proxPreReq;
-            // strcpy(vetorParaImprimir[i], aux->codigoDis);
-            imprimeString(p->codigoDis);
-            freeCelula(&aux);
-        }
-    }
-}
+// int comparaNumDisciplinasListaGrade(Disciplina *lista, Grade *gradeCurricular)
+// {
+//     int contLista = 0, contGrade = 0;
+
+//     while (lista != NULL)
+//     {
+//         lista = lista->proxDisciplina;
+//         contLista++;
+//     }
+
+//     while (gradeCurricular != NULL)
+//     {
+//         gradeCurricular = gradeCurricular->proxDisciplina;
+//         contGrade++;
+//     }
+
+//     if (contLista == contGrade)
+//         return 1;
+//     else
+//         return 0;
+// }
+
+// int valorEstaNaGrade(char *aux, Grade *gradeCurricular)
+// {
+//     while (gradeCurricular != NULL)
+//     {
+//         if (strcmp(aux, gradeCurricular->codDisciplina) == 0)
+//             return 1;
+//         gradeCurricular = gradeCurricular->proxDisciplina;
+//     }
+//     return 0;
+// }
+
+// Grade *criaGradeCurricular(Disciplina *lista)
+// {
+//     Disciplina *p;
+//     Grade *gradeCurricular = NULL;
+//     char **aux;
+//     p = lista;
+
+//     // colocando matérias sem pré-requisitos na grade primeiro
+//     while (p != NULL)
+//     {
+//         aux = p->listaPreRequisitos;
+//         if (strcmp(*aux, "0000") == 0)
+//             criaEInsereNaGrade(&gradeCurricular, p->codDisciplina);
+//         p = p->proxDisciplina;
+//     }
+//     p = lista;
+
+//     // colocando as matérias com pré-requisito
+//     while (comparaNumDisciplinasListaGrade(lista, gradeCurricular) == 0)
+//     {
+//         while (p != NULL)
+//         { // retorna 0 se não estiver na grade e 1 se estiver
+//             if (valorEstaNaGrade(p->codDisciplina, gradeCurricular) == 0)
+//             {
+//                 aux = p->listaPreRequisitos;
+//                 while (strcmp(*aux, "0000") != 0)
+//                 {
+//                     if (valorEstaNaGrade(*aux, gradeCurricular))
+//                         aux++;
+//                     else
+//                     {
+//                         p = p->proxDisciplina;
+//                         aux = p->listaPreRequisitos;
+//                     }
+//                 }
+//                 p = p->proxDisciplina;
+//             }
+//         }
+//         p = lista;
+//     }
+
+//     return gradeCurricular;
+// }
+
+// void imprimeGradeCurricular(Grade *gradeCurricular)
+// {
+//     while (gradeCurricular != NULL)
+//     {
+//         printf("%s ", gradeCurricular->codDisciplina);
+//         gradeCurricular = gradeCurricular->proxDisciplina;
+//     }
+// }
