@@ -17,7 +17,7 @@
 int main(void)
 {
     Disciplina *lista = NULL, *p;
-    // Grade *gradeCurricular = NULL;
+    Grade *gradeCurricular = NULL;
     Pacote *temp;
     Nome nomeCurso;
     Codigo preRequisito, disciplinaDependente;
@@ -43,20 +43,6 @@ int main(void)
             criaEInsereNaLista(&lista, temp);
         }
 
-        // teste
-        p = lista;
-        while (p != NULL)
-        {
-            aux = p->listaPreRequisitos;
-            printf("%s, %d\n", p->codDisciplina, p->indexDisciplina);
-
-            for (int n = 0; n < numDisciplinas; n++)
-                printf("%d ", aux[n]);
-            printf("\n");
-            printf("\n");
-            p = p->proxDisciplina;
-        }
-
         // lendo os pré-requisitos de cada disciplina
         while (CONST)
         {
@@ -74,11 +60,28 @@ int main(void)
             inserePreReqNaLista(&lista, temp);
         }
         printf("\n");
+
+        // teste
+        p = lista;
+        while (p != NULL)
+        {
+            aux = p->listaPreRequisitos;
+            printf("%s, %d\n", p->codDisciplina, p->indexDisciplina);
+
+            for (int n = 0; n < numDisciplinas; n++)
+                printf("%d ", aux[n]);
+            printf("\n");
+            printf("\n");
+            p = p->proxDisciplina;
+        }
         printf("ATÉ AQUI FUNCIONOU!!!\n");
 
-        // gradeCurricular = criaGradeCurricular(lista);
-        // imprimeGradeCurricular(gradeCurricular);
+        gradeCurricular = criaGradeCurricular(lista);
+        imprimeGradeCurricular(gradeCurricular);
     }
+    // freeLista(&lista);
+    // freeGrade(&gradeCurricular);
+    // freePacote(&temp);
 
     return 0;
 }

@@ -66,7 +66,7 @@ void inserePreReqNaLista(Disciplina **lista, Pacote *temp)
 {
     Disciplina *celDependente, *celPreRequisito;
     int *aux, i = 0;
-    //int numDisciplinas = temp->numDisciplinas;
+    // int numDisciplinas = temp->numDisciplinas;
 
     celDependente = *lista;
     celPreRequisito = *lista;
@@ -83,123 +83,152 @@ void inserePreReqNaLista(Disciplina **lista, Pacote *temp)
     if (aux[i] == 0)
     {
         aux[i] = celPreRequisito->indexDisciplina;
-        // printf("%d", celPreRequisito->indexDisciplina);
     }
     else
     {
         while (aux[i] != 0)
             i++;
-        // printf("%d", celPreRequisito->indexDisciplina);
         aux[i] = celPreRequisito->indexDisciplina;
     }
-    // for (int u = 0; u < numDisciplinas; u++)
-    //     printf("%d ", aux[u]);
-    (*lista)->listaPreRequisitos = aux;
 }
 
-// void criaEInsereNaGrade(Grade **gradeCurricular, char *codDisciplina)
+void criaCelulaEInsereNaGrade(char *codDisciplina, Grade **gradeCurricular)
+{
+    Grade *novaCelula, *aux;
+    aux = *gradeCurricular;
+
+    novaCelula = (Grade *)malloc(sizeof(Grade));
+    novaCelula->proxDisciplina = NULL;
+
+    strcpy(novaCelula->codDisciplina, codDisciplina);
+
+    // inserindo nova célula na lista
+    if (*gradeCurricular == NULL)
+        *gradeCurricular = novaCelula;
+    else
+    {
+        while (aux->proxDisciplina != NULL)
+            aux = aux->proxDisciplina;
+        aux->proxDisciplina = novaCelula;
+    }
+}
+
+int comparaListaComGrade(Disciplina *lista, Grade *gradeCurricular)
+{
+    int contLista = 0, contGrade = 0;
+
+    while (lista != NULL)
+    {
+        lista = lista->proxDisciplina;
+        contLista++;
+    }
+
+    while (gradeCurricular != NULL)
+    {
+        gradeCurricular = gradeCurricular->proxDisciplina;
+        contGrade++;
+    }
+
+    if (contLista == contGrade)
+        return 1;
+    else
+        return 0;
+}
+
+Disciplina *procuraCelulaNaLista(int indexPreRequisito, Disciplina *lista)
+{
+    Disciplina *p;
+    p = lista;
+
+    while (p != NULL)
+    {
+        if (p->indexDisciplina == indexPreRequisito)
+            return p;
+        else
+            p = p->proxDisciplina;
+    }
+    return p;
+}
+
+int valorEstaNaGrade(char *valor, Grade *gradeCurricular)
+{
+    while (gradeCurricular != NULL)
+    {
+        if (strcmp(valor, gradeCurricular->codDisciplina) == 0)
+            return 1;
+        else
+            gradeCurricular = gradeCurricular->proxDisciplina;
+    }
+    return 0;
+}
+
+Grade *criaGradeCurricular(Disciplina *lista)
+{
+    Disciplina *p, *aux;
+    Grade *gradeCurricular = NULL;
+    int *indexPreRequisito, *aux2;
+    p = lista;
+
+    // colocando matérias sem pré-requisitos na grade primeiro
+    while (p != NULL)
+    {
+        indexPreRequisito = p->listaPreRequisitos;
+        if (*indexPreRequisito == 0)
+            criaCelulaEInsereNaGrade(p->codDisciplina, &gradeCurricular);
+        p = p->proxDisciplina;
+    }
+
+    p = lista;
+    // colocando as matérias com pré-requisito
+    while (comparaListaComGrade(lista, gradeCurricular) == 0)
+    {
+        while (p != NULL)
+        { // retorna 0 se não estiver na grade e 1 se estiver
+            if (valorEstaNaGrade(p->codDisciplina, gradeCurricular))
+                p = p->proxDisciplina;
+            else
+            {
+                indexPreRequisito = p->listaPreRequisitos;
+                aux2 = indexPreRequisito;
+                while (*indexPreRequisito != 0 && *aux2 != 0)
+                {
+                    aux = procuraCelulaNaLista(*aux2, lista);
+                    if (valorEstaNaGrade(aux->codDisciplina, gradeCurricular))
+                    {
+                        indexPreRequisito++;
+                        aux2++;
+                    }
+                    else
+                        aux2 = aux->listaPreRequisitos;
+                }
+                criaCelulaEInsereNaGrade(aux->codDisciplina, &gradeCurricular);
+                // p = p->proxDisciplina;
+            }
+        }
+        p = lista;
+    }
+
+    return gradeCurricular;
+}
+
+void imprimeGradeCurricular(Grade *gradeCurricular)
+{
+    while (gradeCurricular != NULL)
+    {
+        printf("%s ", gradeCurricular->codDisciplina);
+        gradeCurricular = gradeCurricular->proxDisciplina;
+    }
+}
+
+// void freeLista(Disciplina **lista)
 // {
-//     Grade *novaCelula, *aux;
-//     aux = *gradeCurricular;
 
-//     novaCelula = (Grade *)malloc(sizeof(Grade));
-//     novaCelula->proxDisciplina = NULL;
-
-//     strcpy(novaCelula->codDisciplina, codDisciplina);
-
-//     // inserindo nova célula na lista
-//     if (aux == NULL)
-//         aux = novaCelula;
-//     else
-//     {
-//         while (aux->proxDisciplina != NULL)
-//             aux = aux->proxDisciplina;
-//         aux->proxDisciplina = novaCelula;
-//     }
 // }
 
-// int comparaNumDisciplinasListaGrade(Disciplina *lista, Grade *gradeCurricular)
+// void freeGrade(Grade **grade)
 // {
-//     int contLista = 0, contGrade = 0;
-
-//     while (lista != NULL)
-//     {
-//         lista = lista->proxDisciplina;
-//         contLista++;
-//     }
-
-//     while (gradeCurricular != NULL)
-//     {
-//         gradeCurricular = gradeCurricular->proxDisciplina;
-//         contGrade++;
-//     }
-
-//     if (contLista == contGrade)
-//         return 1;
-//     else
-//         return 0;
 // }
 
-// int valorEstaNaGrade(char *aux, Grade *gradeCurricular)
+// void freePacote(Pacote **pacote)
 // {
-//     while (gradeCurricular != NULL)
-//     {
-//         if (strcmp(aux, gradeCurricular->codDisciplina) == 0)
-//             return 1;
-//         gradeCurricular = gradeCurricular->proxDisciplina;
-//     }
-//     return 0;
-// }
-
-// Grade *criaGradeCurricular(Disciplina *lista)
-// {
-//     Disciplina *p;
-//     Grade *gradeCurricular = NULL;
-//     char **aux;
-//     p = lista;
-
-//     // colocando matérias sem pré-requisitos na grade primeiro
-//     while (p != NULL)
-//     {
-//         aux = p->listaPreRequisitos;
-//         if (strcmp(*aux, "0000") == 0)
-//             criaEInsereNaGrade(&gradeCurricular, p->codDisciplina);
-//         p = p->proxDisciplina;
-//     }
-//     p = lista;
-
-//     // colocando as matérias com pré-requisito
-//     while (comparaNumDisciplinasListaGrade(lista, gradeCurricular) == 0)
-//     {
-//         while (p != NULL)
-//         { // retorna 0 se não estiver na grade e 1 se estiver
-//             if (valorEstaNaGrade(p->codDisciplina, gradeCurricular) == 0)
-//             {
-//                 aux = p->listaPreRequisitos;
-//                 while (strcmp(*aux, "0000") != 0)
-//                 {
-//                     if (valorEstaNaGrade(*aux, gradeCurricular))
-//                         aux++;
-//                     else
-//                     {
-//                         p = p->proxDisciplina;
-//                         aux = p->listaPreRequisitos;
-//                     }
-//                 }
-//                 p = p->proxDisciplina;
-//             }
-//         }
-//         p = lista;
-//     }
-
-//     return gradeCurricular;
-// }
-
-// void imprimeGradeCurricular(Grade *gradeCurricular)
-// {
-//     while (gradeCurricular != NULL)
-//     {
-//         printf("%s ", gradeCurricular->codDisciplina);
-//         gradeCurricular = gradeCurricular->proxDisciplina;
-//     }
 // }

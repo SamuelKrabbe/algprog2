@@ -12,5 +12,5 @@ default :
 	@echo ""
 	@echo "-----------------------------------"
 	@echo "Teste:"
-	./$(PROG) <$(ENTRA) >$(SAI)
+	./$(PROG) < $(ENTRA) > $(SAI)
 	cat $(SAI)
