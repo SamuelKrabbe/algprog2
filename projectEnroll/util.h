@@ -35,13 +35,12 @@ typedef struct pacote
 // FUNÇÕES ---------------------------------------------------------------------
 void criaEInsereNaLista(Disciplina **lista, Pacote *temp)
 {
-    Disciplina *novaCelula, **aux;
+    Disciplina *novaCelula, *aux;
     int numDisciplinas, indexDisciplina;
-    // *aux2
 
     numDisciplinas = temp->numDisciplinas;
     indexDisciplina = temp->indexDisciplina;
-    aux = lista;
+    aux = *lista;
 
     novaCelula = (Disciplina *)malloc(sizeof(Disciplina));
     novaCelula->proxDisciplina = NULL;
@@ -53,40 +52,40 @@ void criaEInsereNaLista(Disciplina **lista, Pacote *temp)
     strcpy(novaCelula->codDisciplina, temp->codDisciplina);
 
     // inserindo nova célula na lista
-    if (*aux == NULL)
-        *aux = novaCelula;
+    if (*lista == NULL)
+        *lista = novaCelula;
     else
     {
-        while ((*aux)->proxDisciplina != NULL)
-            *aux = (*aux)->proxDisciplina;
-        (*aux)->proxDisciplina = novaCelula;
+        while (aux->proxDisciplina != NULL)
+            aux = aux->proxDisciplina;
+        aux->proxDisciplina = novaCelula;
     }
 }
 
 void inserePreReqNaLista(Disciplina **lista, Pacote *temp)
 {
-    Disciplina **celDependente, **celPreRequisito;
+    Disciplina *celDependente, *celPreRequisito;
     int *aux;
 
-    celDependente = lista;
-    celPreRequisito = lista;
+    celDependente = *lista;
+    celPreRequisito = *lista;
 
     // achando a célula da disciplina dependente e do pré-requisito
-    while (strcmp(temp->codDisciplina, (*celDependente)->codDisciplina) != 0 && *celDependente != NULL)
-        *celDependente = (*celDependente)->proxDisciplina;
+    while (strcmp(temp->codDisciplina, celDependente->codDisciplina) != 0 && celDependente != NULL)
+        celDependente = celDependente->proxDisciplina;
 
-    while (strcmp(temp->codPreRequisito, (*celPreRequisito)->codDisciplina) != 0 && *celPreRequisito != NULL)
-        *celPreRequisito = (*celPreRequisito)->proxDisciplina;
+    while (strcmp(temp->codPreRequisito, celPreRequisito->codDisciplina) != 0 && celPreRequisito != NULL)
+        celPreRequisito = celPreRequisito->proxDisciplina;
 
     // inserindo o pré-requisito na lista de pré-requisitos
-    aux = (*celDependente)->listaPreRequisitos;
+    aux = celDependente->listaPreRequisitos;
     if (*aux == 0)
-        *aux = (*celPreRequisito)->indexDisciplina;
+        *aux = celPreRequisito->indexDisciplina;
     else
     {
         while (*aux != 0)
             aux++;
-        *aux = (*celPreRequisito)->indexDisciplina;
+        *aux = celPreRequisito->indexDisciplina;
     }
 }
 

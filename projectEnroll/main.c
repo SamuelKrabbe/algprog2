@@ -47,17 +47,16 @@ int main(void)
         p = lista;
         while (p != NULL)
         {
-            printf("%s\n", p->codDisciplina);
+            printf("%s %d\n", p->codDisciplina, p->indexDisciplina);
             p = p->proxDisciplina;
         }
-
-        // setando a lista de pré-requisitos para 0;
+        // teste2
         p = lista;
         while (p != NULL)
         {
             aux = p->listaPreRequisitos;
-            for (int k = 0; k < numDisciplinas; k++)
-                aux[k] = 0;
+            for (int n = 0; n < numDisciplinas; n++)
+                printf("%d\n", aux[n]);
             p = p->proxDisciplina;
         }
 
@@ -79,16 +78,6 @@ int main(void)
         }
         printf("\n");
         printf("ATÉ AQUI FUNCIONOU!!!\n");
-
-        // teste2
-        p = lista;
-        while (p != NULL)
-        {
-            aux = p->listaPreRequisitos;
-            for (int n = 0; n < numDisciplinas; n++)
-                printf("%d\n", aux[n]);
-            p = p->proxDisciplina;
-        }
 
         // gradeCurricular = criaGradeCurricular(lista);
         // imprimeGradeCurricular(gradeCurricular);
