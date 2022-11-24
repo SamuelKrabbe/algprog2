@@ -33,13 +33,13 @@ typedef struct pacote
 } Pacote;
 
 // FUNÇÕES ---------------------------------------------------------------------
-void criaCelulaEInsereNaLista(Disciplina **lista, Pacote *temp)
+void criaCelulaEInsereNaLista(Disciplina **lista, Pacote *pacote)
 {
     Disciplina *novaCelula, *aux;
     int numDisciplinas, indexDisciplina;
 
-    numDisciplinas = temp->numDisciplinas;
-    indexDisciplina = temp->indexDisciplina;
+    numDisciplinas = pacote->numDisciplinas;
+    indexDisciplina = pacote->indexDisciplina;
     aux = *lista;
 
     novaCelula = (Disciplina *)malloc(sizeof(Disciplina));
@@ -49,7 +49,7 @@ void criaCelulaEInsereNaLista(Disciplina **lista, Pacote *temp)
     // alocando memória para a lista de indexes
     novaCelula->listaPreRequisitos = (int *)malloc(numDisciplinas * sizeof(int));
 
-    strcpy(novaCelula->codDisciplina, temp->codDisciplina);
+    strcpy(novaCelula->codDisciplina, pacote->codDisciplina);
 
     // inserindo nova célula na lista
     if (*lista == NULL)
@@ -62,20 +62,20 @@ void criaCelulaEInsereNaLista(Disciplina **lista, Pacote *temp)
     }
 }
 
-void inserePreReqNaLista(Disciplina **lista, Pacote *temp)
+void inserePreReqNaLista(Disciplina **lista, Pacote *pacote)
 {
     Disciplina *celDependente, *celPreRequisito;
     int *aux, i = 0;
-    // int numDisciplinas = temp->numDisciplinas;
+    // int numDisciplinas = pacote->numDisciplinas;
 
     celDependente = *lista;
     celPreRequisito = *lista;
 
     // achando a célula da disciplina dependente e do pré-requisito
-    while (strcmp(temp->codDisciplina, celDependente->codDisciplina) != 0 && celDependente != NULL)
+    while (strcmp(pacote->codDisciplina, celDependente->codDisciplina) != 0 && celDependente != NULL)
         celDependente = celDependente->proxDisciplina;
 
-    while (strcmp(temp->codPreRequisito, celPreRequisito->codDisciplina) != 0 && celPreRequisito != NULL)
+    while (strcmp(pacote->codPreRequisito, celPreRequisito->codDisciplina) != 0 && celPreRequisito != NULL)
         celPreRequisito = celPreRequisito->proxDisciplina;
 
     // inserindo o pré-requisito na lista de pré-requisitos
@@ -92,6 +92,7 @@ void inserePreReqNaLista(Disciplina **lista, Pacote *temp)
     }
 }
 
+// CRIAÇÃO DA GRADE CURRICULAR
 void criaCelulaEInsereNaGrade(char *codDisciplina, Grade **gradeCurricular)
 {
     Grade *novaCelula, *aux;
@@ -135,10 +136,10 @@ int comparaListaComGrade(Disciplina *lista, Grade *gradeCurricular)
         return 0;
 }
 
-Disciplina *procuraCelulaNaLista(int indexPreRequisito, Disciplina *lista)
+Disciplina *procuraCelulaNaLista(int indexPreRequisito, Disciplina **lista)
 {
     Disciplina *p;
-    p = lista;
+    p = *lista;
 
     while (p != NULL)
     {
@@ -162,32 +163,32 @@ int valorEstaNaGrade(char *valor, Grade *gradeCurricular)
     return 0;
 }
 
-Grade *criaGradeCurricular(Disciplina **lista, Grade **gradeCurricular, Disciplina *celulaAnalisada)
+Grade *criaGradeCurricular(Disciplina **lista, Grade **gradeCurricular, Disciplina *celula)
 {
     Disciplina *p, *aux;
     Grade **grade;
     int *indexPreRequisito;
 
-    p = celulaAnalisada;
+    p = *lista;
+    aux = celula;
     grade = gradeCurricular;
-    indexPreRequisito = p->listaPreRequisitos;
+    indexPreRequisito = aux->listaPreRequisitos;
 
-    if (p == NULL)
-        return *grade;
-    else
+    while (p != NULL)
     {
-        if (valorEstaNaGrade(p->codDisciplina, *grade))
+        if (valorEstaNaGrade(aux->codDisciplina, *grade))
             return *grade;
         else
         {
             while (*indexPreRequisito != 0)
             {
-                aux = procuraCelulaNaLista(*indexPreRequisito, *lista);
+                aux = procuraCelulaNaLista(*indexPreRequisito, lista);
                 *grade = criaGradeCurricular(lista, grade, aux);
                 indexPreRequisito++;
             }
             criaCelulaEInsereNaGrade(p->codDisciplina, grade);
-            return *grade;
+            p = p->proxDisciplina;
+            // return *grade;
 
             // if (p->proxDisciplina == NULL)
             //     return *grade;
@@ -195,8 +196,10 @@ Grade *criaGradeCurricular(Disciplina **lista, Grade **gradeCurricular, Discipli
             //     *grade = criaGradeCurricular(lista, grade, p->proxDisciplina);
         }
     }
+    return *grade;
 }
 
+// IMPRESSÃO E DESALOCAMENTO DE MEMÓRIA
 void imprimeGradeCurricular(Grade *gradeCurricular)
 {
     while (gradeCurricular != NULL)

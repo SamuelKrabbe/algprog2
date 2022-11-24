@@ -18,13 +18,13 @@ int main(void)
 {
     Disciplina *lista = NULL;
     Grade *gradeCurricular = NULL;
-    Pacote *temp;
+    Pacote *pacote;
     Nome nomeCurso;
     Codigo preRequisito, disciplinaDependente;
     int numCursos, numDisciplinas, stopFlag1, stopFlag2;
     //, *aux, *p
 
-    temp = (Pacote *)malloc(sizeof(Pacote));
+    pacote = (Pacote *)malloc(sizeof(Pacote));
 
     scanf("%d", &numCursos);
     printf("\n");
@@ -34,14 +34,14 @@ int main(void)
     {
         scanf(" %[^\n]s", nomeCurso);
         scanf("%d", &numDisciplinas);
-        temp->numDisciplinas = numDisciplinas;
+        pacote->numDisciplinas = numDisciplinas;
 
         // lendo as disciplinas do curso
         for (int j = 0; j < numDisciplinas; j++)
         {
-            scanf("%s %[^\n]s", temp->codDisciplina, temp->nomeDisciplina);
-            temp->indexDisciplina = j + 1;
-            criaCelulaEInsereNaLista(&lista, temp);
+            scanf("%s %[^\n]s", pacote->codDisciplina, pacote->nomeDisciplina);
+            pacote->indexDisciplina = j + 1;
+            criaCelulaEInsereNaLista(&lista, pacote);
         }
 
         // lendo os pré-requisitos de cada disciplina
@@ -55,10 +55,10 @@ int main(void)
             if (stopFlag1 == 0 && stopFlag2 == 0)
                 break;
 
-            strcpy(temp->codPreRequisito, preRequisito);
-            strcpy(temp->codDisciplina, disciplinaDependente);
+            strcpy(pacote->codPreRequisito, preRequisito);
+            strcpy(pacote->codDisciplina, disciplinaDependente);
 
-            inserePreReqNaLista(&lista, temp);
+            inserePreReqNaLista(&lista, pacote);
         }
         printf("\n");
 
