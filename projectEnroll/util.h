@@ -163,6 +163,7 @@ int valorEstaNaGrade(char *valor, Grade *gradeCurricular)
     return 0;
 }
 
+//================================================================================================================
 Grade *criaGradeCurricular(Disciplina **lista, Grade **gradeCurricular, Disciplina *celula)
 {
     Disciplina *p, *aux;
@@ -198,6 +199,48 @@ Grade *criaGradeCurricular(Disciplina **lista, Grade **gradeCurricular, Discipli
     }
     return *grade;
 }
+
+Grade *criaGradeCurricular(Disciplina **lista)
+{
+    Disciplina *p;
+    Grade *grade;
+    int *indexPreRequisito;
+
+    p = *lista;
+    grade = NULL;
+    indexPreRequisito = p->listaPreRequisitos;
+
+    while (comparaListaComGrade(*lista, grade) == 0)
+    {
+        if (p == NULL)
+            p = *lista;
+        else
+        {
+            if (valorEstaNaGrade(p->indexDisciplina, grade))
+                p = p->proxDisciplina;
+            else
+            {
+                if (*indexPreRequisito != 0)
+                {
+                    if (valorEstaNaGrade(*indexPreRequisito, grade))
+                        indexPreRequisito++;
+                    else
+                    {
+                        p = p->proxDisciplina;
+                        indexPreRequisito = p->listaPreRequisitos;
+                    }
+                }
+                else
+                {
+                    criaCelulaEInsereNaGrade(*indexPreRequisito, &grade);
+                    p = p->proxDisciplina;
+                }
+            }
+        }
+    }
+    return grade;
+}
+//===============================================================================================================
 
 // IMPRESSÃO E DESALOCAMENTO DE MEMÓRIA
 void imprimeGradeCurricular(Grade *gradeCurricular)
