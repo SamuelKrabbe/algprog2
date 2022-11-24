@@ -162,12 +162,12 @@ int valorEstaNaGrade(char *valor, Grade *gradeCurricular)
     return 0;
 }
 
-Grade *criaGradeCurricular(Disciplina *lista, Grade **gradeCurricular)
+Grade *criaGradeCurricular(Disciplina **lista, Grade **gradeCurricular, Disciplina *celulaAnalisada)
 {
     Disciplina *p, *aux;
     Grade **grade;
     int *indexPreRequisito;
-    p = lista;
+    p = celulaAnalisada;
     grade = gradeCurricular;
     indexPreRequisito = p->listaPreRequisitos;
 
@@ -175,19 +175,21 @@ Grade *criaGradeCurricular(Disciplina *lista, Grade **gradeCurricular)
         return *grade;
     else
     {
-        if (valorEstaNaGrade(p->codDisciplina, *grade) == 0)
+        if (valorEstaNaGrade(p->codDisciplina, *grade))
+        {
+            return *grade;
+        }
+        else
         {
             while (*indexPreRequisito != 0)
             {
-                aux = procuraCelulaNaLista(*indexPreRequisito, lista);
-                *grade = criaGradeCurricular(aux, grade);
+                aux = procuraCelulaNaLista(*indexPreRequisito, *lista);
+                *grade = criaGradeCurricular(lista, grade, aux);
                 indexPreRequisito++;
             }
             criaCelulaEInsereNaGrade(p->codDisciplina, grade);
             return *grade;
         }
-        else
-            return *grade;
     }
 }
 

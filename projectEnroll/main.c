@@ -62,8 +62,7 @@ int main(void)
         }
         printf("\n");
 
-        gradeCurricular = criaGradeCurricular(lista, &gradeCurricular);
-
+        gradeCurricular = criaGradeCurricular(&lista, &gradeCurricular, lista);
         printf("ATÉ AQUI FUNCIONOU!!!\n");
 
         while (lista != NULL)
