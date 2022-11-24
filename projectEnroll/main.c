@@ -16,12 +16,13 @@
 
 int main(void)
 {
-    Disciplina *lista = NULL, *p;
+    Disciplina *lista = NULL;
     Grade *gradeCurricular = NULL;
     Pacote *temp;
     Nome nomeCurso;
     Codigo preRequisito, disciplinaDependente;
-    int numCursos, numDisciplinas, stopFlag1, stopFlag2, *aux;
+    int numCursos, numDisciplinas, stopFlag1, stopFlag2;
+    //, *aux, *p
 
     temp = (Pacote *)malloc(sizeof(Pacote));
 
@@ -40,7 +41,7 @@ int main(void)
         {
             scanf("%s %[^\n]s", temp->codDisciplina, temp->nomeDisciplina);
             temp->indexDisciplina = j + 1;
-            criaEInsereNaLista(&lista, temp);
+            criaCelulaEInsereNaLista(&lista, temp);
         }
 
         // lendo os pré-requisitos de cada disciplina
@@ -61,27 +62,22 @@ int main(void)
         }
         printf("\n");
 
-        // teste
-        p = lista;
-        while (p != NULL)
-        {
-            aux = p->listaPreRequisitos;
-            printf("%s, %d\n", p->codDisciplina, p->indexDisciplina);
+        gradeCurricular = criaGradeCurricular(lista, &gradeCurricular);
 
-            for (int n = 0; n < numDisciplinas; n++)
-                printf("%d ", aux[n]);
-            printf("\n");
-            printf("\n");
-            p = p->proxDisciplina;
-        }
         printf("ATÉ AQUI FUNCIONOU!!!\n");
 
-        gradeCurricular = criaGradeCurricular(lista);
+        while (lista != NULL)
+        {
+            printf("%s ", lista->codDisciplina);
+            lista = lista->proxDisciplina;
+        }
+        printf("\n");
+
         imprimeGradeCurricular(gradeCurricular);
+
+        freeLista(&lista);
+        freeGrade(&gradeCurricular);
     }
-    // freeLista(&lista);
-    // freeGrade(&gradeCurricular);
-    // freePacote(&temp);
 
     return 0;
 }
