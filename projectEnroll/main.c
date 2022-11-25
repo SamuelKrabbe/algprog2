@@ -16,12 +16,12 @@
 
 int main(void)
 {
-    Disciplina *lista = NULL;
-    Grade *gradeCurricular = NULL;
+    Disciplina *lista = NULL, *aux;
+    // Grade *gradeCurricular = NULL;
     Pacote *pacote;
     Nome nomeCurso;
     Codigo preRequisito, disciplinaDependente;
-    int numCursos, numDisciplinas, stopFlag1, stopFlag2;
+    int numCursos, numDisciplinas, stopFlag1, stopFlag2, *grade;
     //, *aux, *p
 
     pacote = (Pacote *)malloc(sizeof(Pacote));
@@ -62,20 +62,26 @@ int main(void)
         }
         printf("\n");
 
-        gradeCurricular = criaGradeCurricular(&lista, &gradeCurricular, lista);
+        grade = criaVetorGrade(lista, pacote);
+
+        // gradeCurricular = criaGradeCurricular(&lista, &gradeCurricular, lista);
         printf("ATÉ AQUI FUNCIONOU!!!\n");
 
-        while (lista != NULL)
+        for (int k = 0; k < numDisciplinas; k++)
         {
-            printf("%s ", lista->codDisciplina);
-            lista = lista->proxDisciplina;
+            if (grade[k] != 0)
+            {
+                aux = procuraCelulaNaLista(grade[k], &lista);
+                printf("%s ", aux->codDisciplina);
+            }
         }
         printf("\n");
 
-        imprimeGradeCurricular(gradeCurricular);
+        verifica(lista, grade, pacote);
+        // imprimeGradeCurricular(gradeCurricular);
 
         freeLista(&lista);
-        freeGrade(&gradeCurricular);
+        // freeGrade(&gradeCurricular);
     }
 
     return 0;
