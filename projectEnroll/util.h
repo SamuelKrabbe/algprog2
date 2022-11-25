@@ -114,9 +114,10 @@ void criaCelulaEInsereNaGrade(char *codDisciplina, Grade **gradeCurricular)
     }
 }
 
-int comparaListaComGrade(Disciplina *lista, Grade *gradeCurricular)
+int comparaListaComGrade(Disciplina *lista, int *grade, Pacote *pacote)
 {
-    int contLista = 0, contGrade = 0;
+    int numDisciplinas, contLista = 0, contGrade = 0;
+    numDisciplinas = pacote->numDisciplinas;
 
     while (lista != NULL)
     {
@@ -124,10 +125,10 @@ int comparaListaComGrade(Disciplina *lista, Grade *gradeCurricular)
         contLista++;
     }
 
-    while (gradeCurricular != NULL)
+    for (int i = 0; i < numDisciplinas; i++)
     {
-        gradeCurricular = gradeCurricular->proxDisciplina;
-        contGrade++;
+        if (grade[i] != 0)
+            contGrade++;
     }
 
     if (contLista == contGrade)
@@ -151,18 +152,6 @@ Disciplina *procuraCelulaNaLista(int indexPreRequisito, Disciplina *lista)
     return p;
 }
 
-int valorEstaNaGrade(char *valor, Grade *gradeCurricular)
-{
-    while (gradeCurricular != NULL)
-    {
-        if (strcmp(valor, gradeCurricular->codDisciplina) == 0)
-            return 1;
-        else
-            gradeCurricular = gradeCurricular->proxDisciplina;
-    }
-    return 0;
-}
-
 int *criaVetorGrade(Disciplina *lista, Pacote *pacote)
 {
     Disciplina *p;
@@ -182,91 +171,115 @@ int *criaVetorGrade(Disciplina *lista, Pacote *pacote)
     return grade;
 }
 
-int verifica(Disciplina *lista, int *grade, Pacote *pacote)
+int *criaVetorGrade2(Disciplina *lista, Pacote *pacote)
 {
-    Disciplina *p, *p2;
-    int numDisciplinas, *aux, x;
+    Disciplina *p;
+    int *grade2, numDisciplinas, *aux;
 
     p = lista;
     numDisciplinas = pacote->numDisciplinas;
-    aux = p->listaPreRequisitos;
-
-    if (*aux == 0)
-        return -1;
+    grade2 = (int *)malloc(numDisciplinas * sizeof(int));
 
     for (int i = 0; i < numDisciplinas; i++)
-    {   
+    {
+        aux = p->listaPreRequisitos;
         if (*aux != 0)
-        {
-            for (int j = 0; j < numDisciplinas; j++)
-            {
-                if (aux[i] == grade[j])
-                {
-                    x = 1;
-                    break;
-                }
-                else
-                    x = 0;
-            }
-            if (x == 0)
-            {
-                p2 = procuraCelulaNaLista(aux[i], lista);
-                aux = p2->listaPreRequisitos;
-            }
-            else
-                aux++;
-        }
-        else
-            return 0;
+            grade2[i] = p->indexDisciplina;
+        p = p->proxDisciplina;
     }
+    return grade2;
 }
 
-// Grade *criaGradeCurricular(Disciplina **lista, Grade **gradeCurricular, Disciplina *celula)
-// {
-//     Disciplina *p, *aux;
-//     Grade **grade;
-//     int *indexPreRequisito;
+int valorEstaNoVetor(int aux2, int *grade, Pacote *pacote)
+{
+    int numDisciplinas;
+    numDisciplinas = pacote->numDisciplinas;
 
-//     p = *lista;
-//     aux = celula;
-//     grade = gradeCurricular;
-//     indexPreRequisito = aux->listaPreRequisitos;
+    for (int i = 0; i < numDisciplinas; i++)
+    {
+        if (aux2 == grade[i])
+            return 1;
+    }
+    return 0;
+}
 
-//     while (p != NULL)
-//     {
-//         if (valorEstaNaGrade(aux->codDisciplina, *grade))
-//             return *grade;
-//         else
-//         {
-//             while (*indexPreRequisito != 0)
-//             {
-//                 aux = procuraCelulaNaLista(*indexPreRequisito, lista);
-//                 *grade = criaGradeCurricular(lista, grade, aux);
-//                 indexPreRequisito++;
-//             }
-//             criaCelulaEInsereNaGrade(p->codDisciplina, grade);
-//             p = p->proxDisciplina;
-//             // return *grade;
+int *criaVetorGradeFinal(Disciplina *lista, int *grade, int *grade2, Pacote *pacote)
+{
+    Disciplina *aux;
+    int *grade3, numDisciplinas, *aux2;
 
-//             // if (p->proxDisciplina == NULL)
-//             //     return *grade;
-//             // else
-//             //     *grade = criaGradeCurricular(lista, grade, p->proxDisciplina);
-//         }
-//     }
-//     return *grade;
-// }
+    numDisciplinas = pacote->numDisciplinas;
+    grade3 = (int *)malloc(numDisciplinas * sizeof(int));
+
+    for (int i = 0; i < numDisciplinas; i++)
+    {
+        if (grade2[i] != 0)
+        {
+            aux = procuraCelulaNaLista(grade2[i], lista);
+            aux2 = aux->listaPreRequisitos;
+            for (int j = 0; *aux2 != 0; j++)
+            {
+                if (valorEstaNoVetor(*aux2, grade, pacote))
+                    aux2++;
+                else
+                    break;
+            }
+            if (*aux2 == 0)
+                grade3[i] = aux->indexDisciplina;
+        }
+    }
+    return grade3;
+}
+
+int *juntaGrades(int *grade1, int *grade2, Pacote *pacote)
+{
+    int *grade3, numDisciplinas, *aux2;
+    numDisciplinas = pacote->numDisciplinas;
+    int aux[numDisciplinas];
+
+    grade3 = (int *)malloc((2 * numDisciplinas) * sizeof(int));
+
+    for (int i = 0; i < numDisciplinas; i++)
+    {
+        if (grade1[i] != 0 && grade2[i] != 0)
+        {
+            grade3[i] = grade1[i];
+            aux[i] = grade2[i];
+        }
+        else if (grade1[i] != 0 && grade2[i] == 0)
+        {
+            grade3[i] = grade1[i];
+        }
+    }
+
+    aux2 = grade3;
+    for (int j = 0; j < numDisciplinas; j++)
+    {
+        while (*aux2 != 0)
+            aux2++;
+        *aux2 = aux[j];
+        aux2++;
+    }
+
+    return grade3;
+}
 
 // // IMPRESSÃO E DESALOCAMENTO DE MEMÓRIA
-// void imprimeGradeCurricular(Grade *gradeCurricular)
-// {
-//     while (gradeCurricular != NULL)
-//     {
-//         printf("%s ", gradeCurricular->codDisciplina);
-//         gradeCurricular = gradeCurricular->proxDisciplina;
-//     }
-//     printf("\n");
-// }
+void imprimeGradeCurricular(int *grade, Disciplina *lista, Pacote *pacote)
+{
+    Disciplina *aux;
+    int numDisciplinas;
+    numDisciplinas = pacote->numDisciplinas;
+
+    for (int i = 0; i < numDisciplinas; i++)
+    {
+        if (grade[i] != 0)
+        {
+            aux = procuraCelulaNaLista(grade[i], lista);
+            printf("%s ", aux->codDisciplina);
+        }
+    }
+}
 
 void freeLista(Disciplina **lista)
 {
@@ -283,16 +296,3 @@ void freeLista(Disciplina **lista)
         free(aux);
     }
 }
-
-// void freeGrade(Grade **grade)
-// {
-//     Grade **p, *aux;
-//     p = grade;
-
-//     while (*grade != NULL)
-//     {
-//         aux = *p;
-//         *p = aux->proxDisciplina;
-//         free(aux);
-//     }
-// }
