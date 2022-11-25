@@ -18,7 +18,7 @@ typedef struct disciplina
 
 typedef struct gradeCurricular
 {
-    Codigo codDisciplina;
+    int indexDisciplina;
     struct gradeCurricular *proxDisciplina;
 } Grade;
 
@@ -93,42 +93,25 @@ void inserePreReqNaLista(Disciplina **lista, Pacote *pacote)
 }
 
 // CRIAÇÃO DA GRADE CURRICULAR
-void criaCelulaEInsereNaGrade(char *codDisciplina, Grade **gradeCurricular)
+int comparaListaComGrade(Disciplina *lista, Grade *grade)
 {
-    Grade *novaCelula, *aux;
-    aux = *gradeCurricular;
+    Disciplina *p1;
+    Grade *p2;
+    int contLista = 0, contGrade = 0;
 
-    novaCelula = (Grade *)malloc(sizeof(Grade));
-    novaCelula->proxDisciplina = NULL;
+    p1 = lista;
+    p2 = grade;
 
-    strcpy(novaCelula->codDisciplina, codDisciplina);
-
-    // inserindo nova célula na lista
-    if (*gradeCurricular == NULL)
-        *gradeCurricular = novaCelula;
-    else
+    while (p1 != NULL)
     {
-        while (aux->proxDisciplina != NULL)
-            aux = aux->proxDisciplina;
-        aux->proxDisciplina = novaCelula;
-    }
-}
-
-int comparaListaComGrade(Disciplina *lista, int *grade, Pacote *pacote)
-{
-    int numDisciplinas, contLista = 0, contGrade = 0;
-    numDisciplinas = pacote->numDisciplinas;
-
-    while (lista != NULL)
-    {
-        lista = lista->proxDisciplina;
+        p1 = p1->proxDisciplina;
         contLista++;
     }
 
-    for (int i = 0; i < numDisciplinas; i++)
+    while (p2 != NULL)
     {
-        if (grade[i] != 0)
-            contGrade++;
+        p2 = p2->proxDisciplina;
+        contGrade++;
     }
 
     if (contLista == contGrade)
@@ -169,6 +152,26 @@ int *criaVetorGrade(Disciplina *lista, Pacote *pacote)
         p = p->proxDisciplina;
     }
     return grade;
+}
+
+void criaGradeEncadeada(Grade **grade, Disciplina *disciplina)
+{
+    Grade *novaCelula, *aux;
+
+    aux = *grade;
+
+    novaCelula = (Grade *)malloc(sizeof(Grade));
+    novaCelula->proxDisciplina = NULL;
+    novaCelula->indexDisciplina = disciplina->indexDisciplina;
+
+    if (*grade == NULL)
+        *grade = novaCelula;
+    else
+    {
+        while (aux->proxDisciplina != NULL)
+            aux = aux->proxDisciplina;
+        aux->proxDisciplina = novaCelula;
+    }
 }
 
 int *criaVetorGrade2(Disciplina *lista, Pacote *pacote)
@@ -231,54 +234,16 @@ int *criaVetorGradeFinal(Disciplina *lista, int *grade, int *grade2, Pacote *pac
     return grade3;
 }
 
-int *juntaGrades(int *grade1, int *grade2, Pacote *pacote)
-{
-    int *grade3, numDisciplinas, *aux2;
-    numDisciplinas = pacote->numDisciplinas;
-    int aux[numDisciplinas];
-
-    grade3 = (int *)malloc((2 * numDisciplinas) * sizeof(int));
-
-    for (int i = 0; i < numDisciplinas; i++)
-    {
-        if (grade1[i] != 0 && grade2[i] != 0)
-        {
-            grade3[i] = grade1[i];
-            aux[i] = grade2[i];
-        }
-        else if (grade1[i] != 0 && grade2[i] == 0)
-        {
-            grade3[i] = grade1[i];
-        }
-    }
-
-    aux2 = grade3;
-    for (int j = 0; j < numDisciplinas; j++)
-    {
-        while (*aux2 != 0)
-            aux2++;
-        *aux2 = aux[j];
-        aux2++;
-    }
-
-    return grade3;
-}
-
 // // IMPRESSÃO E DESALOCAMENTO DE MEMÓRIA
-void imprimeGradeCurricular(int *grade, Disciplina *lista, Pacote *pacote)
+void imprimeGradeCurricular(Grade *grade, Disciplina *lista)
 {
-    Disciplina *aux;
-    int numDisciplinas;
-    numDisciplinas = pacote->numDisciplinas;
-
-    for (int i = 0; i < numDisciplinas; i++)
-    {
-        if (grade[i] != 0)
-        {
-            aux = procuraCelulaNaLista(grade[i], lista);
-            printf("%s ", aux->codDisciplina);
-        }
-    }
+    Disciplina *p;
+   while (grade!= NULL)
+   {
+        p = procuraCelulaNaLista(grade->indexDisciplina, lista);
+        printf("%s ", p->codDisciplina);
+        grade = grade->proxDisciplina;
+   }
 }
 
 void freeLista(Disciplina **lista)
@@ -287,7 +252,7 @@ void freeLista(Disciplina **lista)
     int *aux2;
     p = lista;
 
-    while (*lista != NULL)
+    while (*p != NULL)
     {
         aux = *p;
         aux2 = aux->listaPreRequisitos;
@@ -296,3 +261,17 @@ void freeLista(Disciplina **lista)
         free(aux);
     }
 }
+
+// void freeGrade(Grade **grade)
+// {
+//     Grade *p, *aux;
+//     p = *grade;
+//     *grade = NULL;
+
+//     while (p != NULL)
+//     {
+//         aux = p;
+//         p = aux->proxDisciplina;
+//         free(aux);
+//     }
+// }

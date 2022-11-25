@@ -1,4 +1,4 @@
-2
+1
 Tecnolologia em Psicologia Hidráulica
 18
 ICO1 Introdução à Computação 1
@@ -35,12 +35,4 @@ PHI PCL
 PGE PGR
 PGE PCL
 IMC PGR
-FIM FIM
-Tecnologia em Pedagogia Cinética
-3
-LP1 Língua Portuguesa 1
-FIS1 Física 1
-PGR Projeto de Graduação
-LP1 PGR
-FIS1 PGR
 FIM FIM
