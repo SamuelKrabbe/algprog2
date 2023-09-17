@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1667707966 source:c:\users\samuel krabbe\learncode\prog2trab1\main.c
+	<stdio.h>
+	<stdlib.h>
+	<limits.h>
+	"util.h"
+
+1667707580 c:\users\samuel krabbe\learncode\prog2trab1\util.h
+	<stdio.h>
+	<stdlib.h>
+	<limits.h>
+
