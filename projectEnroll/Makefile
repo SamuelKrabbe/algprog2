@@ -4,11 +4,11 @@ PROG = main
 ENTRA = entrada.txt
 SAI = saida.txt
 
-CFLAGS = -Wall
+CFLAGS = -pedantic -Wall 
 
 default :
 	@echo ""
-	gcc $(CFLAGS) $(PROG).c -o $(PROG)
+	gcc $(PROG).c $(CFLAGS) -o $(PROG) 
 	@echo ""
 	@echo "-----------------------------------"
 	@echo "Teste:"
