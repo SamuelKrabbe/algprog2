@@ -1,13 +1,19 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main()
 {
-    float num1;
-    float num2;
+    char nome[50];
+    double salarioFixo;
+    double vendasNoMes;
+    double resultado;
+    scanf("%s", nome);
 
-    scanf("%f", &num1);
-    scanf("%f", &num2);
-    printf("Printando os dois números:\n%.2f\n%.2f\n", num1, num2);
+    scanf("%lf", &salarioFixo);
+
+    scanf("%lf", &vendasNoMes);
+    resultado = salarioFixo + vendasNoMes * 0.15;
+    printf("TOTAL = R$ %.2lf\n", resultado);
 
     return 0;
 }
